@@ -4,6 +4,8 @@ from django.core import serializers
 from django.http import HttpResponseForbidden,HttpResponse,JsonResponse
 from django.shortcuts import render
 
+import json
+
 from .models import AP
 
 #View to take in data from photon
@@ -12,14 +14,17 @@ def POST(request):
     #Ensure that the data is being POSTed
     if(request.method == 'POST'):
 
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
         #Ensure that it's our device that is sending data
-        if(request.POST['coreid'] == os.environ["deviceID"]):
+        if(body['coreid'] == os.environ["deviceID"]):
 
             #Do we know this AP already? If not, create it
-            ap = AP.objects.get_or_create(BSSID=request.POST['BSSID'])
+            ap = AP.objects.get_or_create(BSSID=body['BSSID'])
 
             #Update RSSI
-            ap.RSSI = request.POST['RSSI']
+            ap.RSSI = body['RSSI']
 
             #Return all good
             return HttpResponse(status=200)
