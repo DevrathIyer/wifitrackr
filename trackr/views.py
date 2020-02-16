@@ -13,7 +13,7 @@ def POST(request):
     if(request.method == 'POST'):
 
         #Ensure that it's our device that is sending data
-        if(request.POST['coreid'] == os.environ("deviceID")):
+        if(request.POST['coreid'] == os.environ["deviceID"]):
 
             #Do we know this AP already? If not, create it
             ap = AP.objects.get_or_create(BSSID=request.POST['BSSID'])
